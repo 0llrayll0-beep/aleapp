@@ -103,7 +103,7 @@ interface Car {
   acceleration: string;
   price: string;
   category: Category;
-  image: any; // tem que tá na ('./assets/car.jpg') ou no { uri: '...' }
+  image: any; // tem que tá na ('./pages/id(sla que numero).jpg') ou no { uri: '...' }
   description: string;
   origin: string;
   featured: boolean;

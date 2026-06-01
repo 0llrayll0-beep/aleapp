@@ -15,7 +15,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-//  Paleta (idêntica ao LoginScreen) 
+//  Paleta (idêntica ao Login.tsx para garantir que ninguem pire ao ver a IU) 
 const T = {
   bg: '#141412',
   surface: '#1D1C1A',

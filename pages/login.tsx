@@ -91,7 +91,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   const slideBtn   = React.useRef(new Animated.Value(16)).current;
   const shakeAnim  = React.useRef(new Animated.Value(0)).current;
 
-  // Carrega banco ao montar
+  // Carrega banco ao montar(não atualiza o cadastro por algum motivo arrumar se der tempo)
   useEffect(() => {
     (async () => {
       const db = await carregarBanco();
