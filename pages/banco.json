@@ -1,0 +1,18 @@
+{
+  "usuarios": [
+    {
+      "id": "1",
+      "nome": "admin",
+      "email": "admin@email.com",
+      "senha": "123456",
+      "criadoEm": "2026-01-01"
+    },
+        {
+      "id": "2",
+      "nome": "ronaldo",
+      "email": "ronaldo@email.com",
+      "senha": "654321",
+      "criadoEm": "2099-01-01"
+    }
+  ]
+}
