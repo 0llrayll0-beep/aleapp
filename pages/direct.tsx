@@ -1,7 +1,4 @@
-// App.tsx
-// Entrada do app - define a navegação entre Login e Home
-// npm install @react-navigation/native @react-navigation/native-stack
-// npx expo install react-native-screens react-native-safe-area-context
+//define a navegação entre Login e Home
 
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
