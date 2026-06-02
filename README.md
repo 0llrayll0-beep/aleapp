@@ -1,6 +1,6 @@
 # AleApp
 
-Aplicação em React para [adicione aqui o propósito do app].
+Aplicação em React para a escola fortec.
 
 ## Começando
 
