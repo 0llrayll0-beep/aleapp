@@ -690,7 +690,7 @@ function DetailSheet({ car, onClose, screenHeight }: {
 
           <View style={{ height: 1, backgroundColor: T.rule, marginHorizontal: 24 }} />
 
-          {/* Specs */}
+          {/* infos */}
           <View style={{ paddingHorizontal: 24, paddingVertical: 20 }}>
             <Text style={{ fontSize: 9, letterSpacing: 3, color: T.inkLight, fontWeight: '700', textTransform: 'uppercase', marginBottom: 12 }}>
               Especificacoes
@@ -765,7 +765,6 @@ function MainPageInner() {
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 60 }}>
         
-        {/* -Masthead -*/}
         <View style={{ paddingHorizontal: padH, paddingTop: 28, paddingBottom: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <View style={{ flex: 1 }}>
