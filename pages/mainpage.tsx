@@ -125,7 +125,7 @@ interface CarDatabase {
   defaultCars: Car[];
 }
 
-// SIMULAÇÃO DO BANCO DE DADOS - carrosbd.json
+// SIMULAÇÃO DO BANCO DE DADOS carrosbd.json
 const CARROS_DB: CarDatabase = {
   users: {},
   defaultCars: [
@@ -302,7 +302,7 @@ const CARROS_DB: CarDatabase = {
   ]
 };
 
-// Simular ID do usuário atual (em produção viria do sistema de autenticação)
+// Simular ID do usuário atual (em produção viria do sistema de autenticação (que seria criado mas por ser protoripo é inutil))
 const CURRENT_USER_ID = 'user_123';
 const CURRENT_USERNAME = 'Entusiasta';
 
@@ -398,7 +398,7 @@ function MoonIcon({ color, bg, size }: { color: string; bg: string; size: number
   );
 }
 
-// BOTAO DE TEMA
+// BOTAO DE TEMA (template  :) )
 function ThemeToggle() {
   const { mode, toggle } = useTheme();
   const slideX = useRef(new Animated.Value(mode === 'dark' ? 1 : 0)).current;
@@ -470,7 +470,7 @@ function ThemeToggle() {
   );
 }
 
-// CARD DESTAQUE
+// CARD DESTAQUE 
 function FeaturedCard({ car, onPress, featW, imgH }: {
   car: Car;
   onPress: () => void;
@@ -616,7 +616,7 @@ function ListCard({ car, onPress, onDelete, thumbW, thumbH }: {
         </View>
       </TouchableOpacity>
 
-      {/* Botão excluir separado, não dentro do TouchableOpacity do card */}
+      {/* Botão excluir separado, não dentro do TouchableOpacity do card (nota ele não funciona direito pq o banco não sincroniza pq é tsx ;-;)*/}
       {onDelete && (
         <TouchableOpacity
           onPress={onDelete}
@@ -838,7 +838,7 @@ function DetailSheet({ car, onClose, onDelete, screenHeight }: {
   );
 }
 
-// MODAL ADICIONAR CARRO - DESIGN MELHORADO
+// MODAL ADICIONAR CARRO - DESIGN MELHORADO(abençoado seja o figma e o ryan)
 function AddCarModal({ visible, onClose, onAddCar }: {
   visible: boolean;
   onClose: () => void;
@@ -1309,7 +1309,7 @@ function AddCarModal({ visible, onClose, onAddCar }: {
   );
 }
 
-// BOTAO ADICIONAR
+// BOTAO ADICIONAR (COM ANIMACAO MELHORADA E SEM FALHAS DE TOQUE (obrigado))
 function AddButton({ onPress }: { onPress: () => void }) {
   const { T } = useTheme();
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -1344,7 +1344,6 @@ function AddButton({ onPress }: { onPress: () => void }) {
         bottom: 30,
         right: 30,
         zIndex: 200,
-        // Remova qualquer fundo ou sombra daqui
         backgroundColor: 'transparent',
       }}
     >
@@ -1358,7 +1357,6 @@ function AddButton({ onPress }: { onPress: () => void }) {
         borderWidth: 3,
         borderColor: 'rgba(255,255,255,0.3)',
         transform: [{ scale: scaleAnim }, { rotate }],
-        // Aplique a sombra diretamente no círculo
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
@@ -1378,7 +1376,7 @@ function AddButton({ onPress }: { onPress: () => void }) {
   );
 }
 
-// TELA PRINCIPAL
+// TELA PRINCIPAL (a main page)
 function MainPageInner() {
   const { T, mode } = useTheme();
   const { width: W, height: H } = useWindowDimensions();
@@ -1407,7 +1405,7 @@ function MainPageInner() {
       if (storedDB) {
         setCarDatabase(JSON.parse(storedDB));
       } else {
-        // Inicializar com dados padrão
+        // Inicializar com dados padrão(os basicoes que eu fiz lá pq o carrosdb.json só deciciu morrer ao mudar a cor do botão de adicionar carros)
         const initialDB = {
           ...CARROS_DB,
           users: {

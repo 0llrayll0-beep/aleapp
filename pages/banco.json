@@ -7,12 +7,19 @@
       "senha": "123456",
       "criadoEm": "2026-01-01"
     },
-        {
+    {
       "id": "2",
       "nome": "ronaldo",
       "email": "ronaldo@email.com",
       "senha": "654321",
       "criadoEm": "2099-01-01"
+    },
+    {
+      "id": "mpx7gl5s6ym2h",
+      "nome": "wsw",
+      "email": "teste@gmail.com",
+      "senha": "123456",
+      "criadoEm": "2026-06-02"
     }
   ]
 }

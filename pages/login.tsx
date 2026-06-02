@@ -13,10 +13,12 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import bancoJson from './banco.json';
 
-//  Paleta 
+// Paleta 
 const T = {
   bg: '#141412',
   surface: '#1D1C1A',
@@ -32,7 +34,7 @@ const T = {
   closeBtnText: '#141412',
 };
 
-//  Tipos 
+// Tipos 
 interface User {
   id: string;
   nome: string;
@@ -45,17 +47,30 @@ interface Database {
   usuarios: User[];
 }
 
-//  Caminho destino no dispositivo 
-async function carregarBanco(): Promise<Database> {
-  return {
-    usuarios: bancoJson.usuarios || [],
-  };
+// NOVA FUNÇÃO: Carregar banco combinado (JSON + AsyncStorage) (não tenho certeza se funciona pouco tempo para testar)
+async function carregarBancoCompleto(): Promise<Database> {
+  try {
+    // Tentar carregar da API primeiro
+    const response = await fetch('http://localhost:3001/api/usuarios');
+    
+    if (response.ok) {
+      const db = await response.json();
+      console.log(' Carregado da API:', db.usuarios.length, 'usuários');
+      return db;
+    }
+  } catch (error) {
+    console.log('Servidor não disponível, usando arquivo local');
+  }
+  
+  // Fallback: usar arquivo local
+  console.log(' Carregando do banco.json local');
+  return { usuarios: bancoJson.usuarios || [] };
 }
 
-//  Autenticação 
+// Autenticação 
 function autenticar(db: Database, identificador: string, senha: string): User | null {
   const id = identificador.trim().toLowerCase();
-  const s  = senha.trim();
+  const s = senha.trim();
 
   return (
     db.usuarios.find(
@@ -66,52 +81,63 @@ function autenticar(db: Database, identificador: string, senha: string): User | 
   );
 }
 
-//  Componente 
+// Componente 
 export default function LoginScreen({ navigation }: { navigation: any }) {
   const { width: W } = useWindowDimensions();
 
-  const s     = (v: number) => Math.round((v / 390) * W);
+  const s = (v: number) => Math.round((v / 390) * W);
   const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
 
   const [identificador, setIdentificador] = useState('');
-  const [senha, setSenha]                 = useState('');
-  const [idFocused, setIdFocused]         = useState(false);
-  const [senhaFocused, setSenhaFocused]   = useState(false);
-  const [carregando, setCarregando]       = useState(false);
-  const [erroBanco, setErroBanco]         = useState('');
-  const [erroSenha, setErroSenha]         = useState('');
-  const [banco, setBanco]                 = useState<Database | null>(null);
+  const [senha, setSenha] = useState('');
+  const [idFocused, setIdFocused] = useState(false);
+  const [senhaFocused, setSenhaFocused] = useState(false);
+  const [carregando, setCarregando] = useState(false);
+  const [erroBanco, setErroBanco] = useState('');
+  const [erroSenha, setErroSenha] = useState('');
+  const [banco, setBanco] = useState<Database | null>(null);
 
   // Animações
-  const fadeTitle  = React.useRef(new Animated.Value(0)).current;
+  const fadeTitle = React.useRef(new Animated.Value(0)).current;
   const slideTitle = React.useRef(new Animated.Value(20)).current;
-  const fadeForm   = React.useRef(new Animated.Value(0)).current;
-  const slideForm  = React.useRef(new Animated.Value(24)).current;
-  const fadeBtn    = React.useRef(new Animated.Value(0)).current;
-  const slideBtn   = React.useRef(new Animated.Value(16)).current;
-  const shakeAnim  = React.useRef(new Animated.Value(0)).current;
+  const fadeForm = React.useRef(new Animated.Value(0)).current;
+  const slideForm = React.useRef(new Animated.Value(24)).current;
+  const fadeBtn = React.useRef(new Animated.Value(0)).current;
+  const slideBtn = React.useRef(new Animated.Value(16)).current;
+  const shakeAnim = React.useRef(new Animated.Value(0)).current;
 
-  // Carrega banco ao montar(não atualiza o cadastro por algum motivo arrumar se der tempo)
+  // Carrega banco ao montar - AGORA COMBINANDO AMBAS AS FONTES
   useEffect(() => {
     (async () => {
-      const db = await carregarBanco();
+      const db = await carregarBancoCompleto();
       setBanco(db);
+      console.log(' Banco carregado:', db.usuarios.length, 'usuários');
     })();
   }, []);
+
+  // Recarregar banco quando a tela receber foco
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+      const db = await carregarBancoCompleto();
+      setBanco(db);
+      console.log('Banco atualizado:', db.usuarios.length, 'usuários');
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   // Animação de entrada
   useEffect(() => {
     Animated.sequence([
       Animated.parallel([
-        Animated.timing(fadeTitle,  { toValue: 1, duration: 700, useNativeDriver: true }),
+        Animated.timing(fadeTitle, { toValue: 1, duration: 700, useNativeDriver: true }),
         Animated.spring(slideTitle, { toValue: 0, speed: 18, bounciness: 4, useNativeDriver: true }),
       ]),
       Animated.parallel([
-        Animated.timing(fadeForm,  { toValue: 1, duration: 550, useNativeDriver: true }),
+        Animated.timing(fadeForm, { toValue: 1, duration: 550, useNativeDriver: true }),
         Animated.spring(slideForm, { toValue: 0, speed: 18, bounciness: 3, useNativeDriver: true }),
       ]),
       Animated.parallel([
-        Animated.timing(fadeBtn,  { toValue: 1, duration: 450, useNativeDriver: true }),
+        Animated.timing(fadeBtn, { toValue: 1, duration: 450, useNativeDriver: true }),
         Animated.spring(slideBtn, { toValue: 0, speed: 20, bounciness: 3, useNativeDriver: true }),
       ]),
     ]).start();
@@ -120,11 +146,11 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   const shake = () => {
     shakeAnim.setValue(0);
     Animated.sequence([
-      Animated.timing(shakeAnim, { toValue:  8, duration: 60, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: 8, duration: 60, useNativeDriver: true }),
       Animated.timing(shakeAnim, { toValue: -8, duration: 60, useNativeDriver: true }),
-      Animated.timing(shakeAnim, { toValue:  6, duration: 50, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: 6, duration: 50, useNativeDriver: true }),
       Animated.timing(shakeAnim, { toValue: -6, duration: 50, useNativeDriver: true }),
-      Animated.timing(shakeAnim, { toValue:  0, duration: 40, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: 0, duration: 40, useNativeDriver: true }),
     ]).start();
   };
 
@@ -146,7 +172,10 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
     setCarregando(true);
     await new Promise((r) => setTimeout(r, 400));
 
-    const db      = banco ?? (await carregarBanco());
+    // Recarregar banco para garantir dados atualizados
+    const db = await carregarBancoCompleto();
+    setBanco(db);
+    
     const usuario = autenticar(db, identificador, senha);
 
     setCarregando(false);
@@ -158,23 +187,25 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
       return;
     }
 
+    // Salvar usuário logado
+    await AsyncStorage.setItem('usuario_logado', JSON.stringify(usuario));
     navigation.navigate('Home', { usuario });
   };
 
   // Dimensões responsivas
-  const padH        = clamp(s(24), 16, 40);
-  const badgeTop    = Platform.OS === 'ios' ? clamp(s(56), 44, 72) : clamp(s(36), 28, 52);
+  const padH = clamp(s(24), 16, 40);
+  const badgeTop = Platform.OS === 'ios' ? clamp(s(56), 44, 72) : clamp(s(36), 28, 52);
   const headingSize = clamp(s(30), 22, 38);
-  const labelSize   = clamp(s(9), 8, 11);
-  const inputPadV   = clamp(s(13), 10, 16);
+  const labelSize = clamp(s(9), 8, 11);
+  const inputPadV = clamp(s(13), 10, 16);
   const inputFontSz = clamp(s(13), 11, 15);
-  const btnPadV     = clamp(s(15), 12, 18);
-  const btnFontSz   = clamp(s(11), 10, 13);
-  const taglineSz   = clamp(s(24), 16, 32);
-  const panelPadT   = clamp(s(28), 20, 40);
-  const panelPadB   = Platform.OS === 'ios' ? clamp(s(40), 28, 56) : clamp(s(24), 18, 36);
-  const fieldGap    = clamp(s(18), 12, 24);
-  const sectionGap  = clamp(s(24), 16, 32);
+  const btnPadV = clamp(s(15), 12, 18);
+  const btnFontSz = clamp(s(11), 10, 13);
+  const taglineSz = clamp(s(24), 16, 32);
+  const panelPadT = clamp(s(28), 20, 40);
+  const panelPadB = Platform.OS === 'ios' ? clamp(s(40), 28, 56) : clamp(s(24), 18, 36);
+  const fieldGap = clamp(s(18), 12, 24);
+  const sectionGap = clamp(s(24), 16, 32);
 
   return (
     <View style={styles.root}>
@@ -321,7 +352,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
                   <Text style={[styles.footerText, { fontSize: labelSize }]}>SEM CONTA?</Text>
                   
                   <Pressable onPress={() => navigation.navigate('Cadastro')}>
-                  <Text style={[styles.footerLink, { fontSize: labelSize }]}>CRIAR ACESSO →</Text>
+                    <Text style={[styles.footerLink, { fontSize: labelSize }]}>CRIAR ACESSO →</Text>
                   </Pressable>
                 </View>
 
@@ -335,7 +366,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   );
 }
 
-//  Estilos 
+// Estilos (mantenha os mesmos)
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: T.bg },
   bgImage: { flex: 1 },
@@ -344,18 +375,14 @@ const styles = StyleSheet.create({
     top: 0, left: 0, right: 0, bottom: 0,
     backgroundColor: 'rgba(20,20,18,0.72)',
   },
-
   badge: { position: 'absolute', zIndex: 10 },
   badgeLabel: { letterSpacing: 4, color: T.inkLight, fontWeight: '600', marginBottom: 2 },
   badgeTitle: { fontWeight: '300', color: T.ink, letterSpacing: 1 },
-
   kavWrapper: { flex: 1, justifyContent: 'flex-end' },
   scrollContent: { flexGrow: 1, justifyContent: 'flex-end' },
-
   taglineBlock: { paddingTop: 8 },
   taglineText: { fontWeight: '300', fontStyle: 'italic', color: T.ink, letterSpacing: -0.3 },
   taglineSub: { marginTop: 8, letterSpacing: 3, color: T.inkLight },
-
   panel: {
     backgroundColor: 'rgba(29,28,26,0.97)',
     borderTopLeftRadius: 14,
@@ -365,11 +392,9 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderColor: T.rule,
   },
-
   panelLabel: { letterSpacing: 4, color: T.inkLight, marginBottom: 6 },
   panelHeading: { fontWeight: '300', color: T.ink, letterSpacing: -0.3 },
   panelHeadingItalic: { fontStyle: 'italic', color: T.inkMid },
-
   fieldLabel: { letterSpacing: 3, color: T.inkLight, marginBottom: 8 },
   input: {
     backgroundColor: T.bg,
@@ -382,23 +407,17 @@ const styles = StyleSheet.create({
   },
   inputFocused: { borderColor: T.accent },
   inputError: { borderColor: T.danger },
-
   erroTexto: { color: T.danger, marginTop: 6, letterSpacing: 0.5 },
-
   forgotLink: { textAlign: 'right', letterSpacing: 2, color: T.inkLight, marginTop: -4 },
-
   btnPrimary: { backgroundColor: T.ink, borderRadius: 2, alignItems: 'center' },
   btnPrimaryPressed: { backgroundColor: '#FFFFFF', transform: [{ scale: 0.985 }] },
   btnPrimaryText: { letterSpacing: 3, color: T.closeBtnText, fontWeight: '500' },
-
   orRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   orLine: { flex: 1, height: 1, backgroundColor: T.rule },
   orText: { letterSpacing: 2, color: T.inkLight },
-
   btnGhost: { borderWidth: 1, borderColor: T.rule, borderRadius: 2, alignItems: 'center' },
   btnGhostPressed: { borderColor: T.inkLight, transform: [{ scale: 0.985 }] },
   btnGhostText: { letterSpacing: 3, color: T.inkMid },
-
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
