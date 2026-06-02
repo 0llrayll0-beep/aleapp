@@ -547,7 +547,7 @@ function FeaturedCard({ car, onPress, featW, imgH }: {
   );
 }
 
-// CARD LISTA COM BOTÃO EXCLUIR
+// CARD LISTA CORRIGIDO – botão excluir agora funciona sem interferência
 function ListCard({ car, onPress, onDelete, thumbW, thumbH }: {
   car: Car;
   onPress: () => void;
@@ -558,83 +558,84 @@ function ListCard({ car, onPress, onDelete, thumbW, thumbH }: {
   const { T } = useTheme();
 
   return (
-    <TouchableOpacity
-      style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 24, paddingVertical: 14 }}
-      onPress={onPress}
-      activeOpacity={0.7}
-    >
-      <View style={{
-        width: thumbW,
-        height: thumbH,
-        borderRadius: 2,
-        backgroundColor: T.placeholder,
-        overflow: 'hidden',
-        marginRight: 16,
-      }}>
-        {car.image ? (
-          <Image source={car.image} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
-        ) : (
-          <View style={{ flex: 1, backgroundColor: T.placeholder }} />
-        )}
-      </View>
+    <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 24, paddingVertical: 14 }}>
+      {/* Área clicável principal (imagem + texto) */}
+      <TouchableOpacity
+        style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
+        onPress={onPress}
+        activeOpacity={0.7}
+      >
+        <View style={{
+          width: thumbW,
+          height: thumbH,
+          borderRadius: 2,
+          backgroundColor: T.placeholder,
+          overflow: 'hidden',
+          marginRight: 16,
+        }}>
+          {car.image ? (
+            <Image source={car.image} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+          ) : (
+            <View style={{ flex: 1, backgroundColor: T.placeholder }} />
+          )}
+        </View>
 
-      <View style={{ flex: 1 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <Text style={{ fontSize: 9, letterSpacing: 2, color: T.inkLight, fontWeight: '600', textTransform: 'uppercase', marginBottom: 2 }}>
-            {car.brand}
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Text style={{ fontSize: 9, letterSpacing: 2, color: T.inkLight, fontWeight: '600', textTransform: 'uppercase', marginBottom: 2 }}>
+              {car.brand}
+            </Text>
+            {car.isUserCar && (
+              <View style={{
+                backgroundColor: car.userId === CURRENT_USER_ID ? T.success : T.accent,
+                paddingHorizontal: 6,
+                paddingVertical: 2,
+                borderRadius: 8,
+                marginBottom: 2,
+              }}>
+                <Text style={{ fontSize: 7, color: '#FFFFFF', fontWeight: '600' }}>
+                  {car.userId === CURRENT_USER_ID ? 'SEU' : 'USUÁRIO'}
+                </Text>
+              </View>
+            )}
+          </View>
+          <Text style={{ fontSize: 15, fontWeight: '700', color: T.ink, letterSpacing: -0.2 }} numberOfLines={1}>
+            {car.name}
           </Text>
-          {car.isUserCar && (
-            <View style={{
-              backgroundColor: car.userId === CURRENT_USER_ID ? T.success : T.accent,
-              paddingHorizontal: 6,
-              paddingVertical: 2,
-              borderRadius: 8,
-              marginBottom: 2,
-            }}>
-              <Text style={{ fontSize: 7, color: '#FFFFFF', fontWeight: '600' }}>
-                {car.userId === CURRENT_USER_ID ? 'SEU' : 'USUÁRIO'}
-              </Text>
-            </View>
-          )}
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+            <Text style={{ fontSize: 11, color: T.inkMid }}>{car.year}</Text>
+            <Text style={{ marginHorizontal: 5, color: T.inkLight, fontSize: 11 }}>·</Text>
+            <Text style={{ fontSize: 11, color: T.inkMid }}>{CATEGORY_LABEL[car.category]}</Text>
+            {car.userId && car.userId !== CURRENT_USER_ID && (
+              <>
+                <Text style={{ marginHorizontal: 5, color: T.inkLight, fontSize: 11 }}>·</Text>
+                <Text style={{ fontSize: 11, color: T.accent }}>Público</Text>
+              </>
+            )}
+          </View>
         </View>
-        <Text style={{ fontSize: 15, fontWeight: '700', color: T.ink, letterSpacing: -0.2 }} numberOfLines={1}>
-          {car.name}
-        </Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
-          <Text style={{ fontSize: 11, color: T.inkMid }}>{car.year}</Text>
-          <Text style={{ marginHorizontal: 5, color: T.inkLight, fontSize: 11 }}>·</Text>
-          <Text style={{ fontSize: 11, color: T.inkMid }}>{CATEGORY_LABEL[car.category]}</Text>
-          {car.userId && car.userId !== CURRENT_USER_ID && (
-            <>
-              <Text style={{ marginHorizontal: 5, color: T.inkLight, fontSize: 11 }}>·</Text>
-              <Text style={{ fontSize: 11, color: T.accent }}>Público</Text>
-            </>
-          )}
-        </View>
-      </View>
+      </TouchableOpacity>
 
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-        {onDelete && (
-          <TouchableOpacity
-            onPress={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: 15,
-              backgroundColor: T.danger + '20',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Text style={{ fontSize: 16, color: T.danger, fontWeight: '600' }}>×</Text>
-          </TouchableOpacity>
-        )}
-        <Text style={{ fontSize: 22, color: T.inkLight, fontWeight: '300' }}>›</Text>
-      </View>
-    </TouchableOpacity>
+      {/* Botão excluir separado, não dentro do TouchableOpacity do card */}
+      {onDelete && (
+        <TouchableOpacity
+          onPress={onDelete}
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 15,
+            backgroundColor: T.danger + '20',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginLeft: 12,
+          }}
+        >
+          <Text style={{ fontSize: 16, color: T.danger, fontWeight: '600' }}>×</Text>
+        </TouchableOpacity>
+      )}
+
+      <Text style={{ fontSize: 22, color: T.inkLight, fontWeight: '300', marginLeft: onDelete ? 4 : 0 }}>›</Text>
+    </View>
   );
 }
 
@@ -687,8 +688,7 @@ function DetailSheet({ car, onClose, onDelete, screenHeight }: {
       [
         { text: 'Cancelar', style: 'cancel' },
         { 
-          text: 'Excluir', 
-          style: 'destructive',
+          text: 'Excluir',
           onPress: () => {
             if (onDelete) {
               onDelete();
@@ -1377,6 +1377,7 @@ function AddButton({ onPress }: { onPress: () => void }) {
     </TouchableOpacity>
   );
 }
+
 // TELA PRINCIPAL
 function MainPageInner() {
   const { T, mode } = useTheme();
@@ -1445,7 +1446,6 @@ function MainPageInner() {
   const handleAddCar = (newCar: Car) => {
     const updatedDB = { ...carDatabase };
     
-    // Garantir que o usuário existe
     if (!updatedDB.users[CURRENT_USER_ID]) {
       updatedDB.users[CURRENT_USER_ID] = {
         username: CURRENT_USERNAME,
@@ -1453,9 +1453,7 @@ function MainPageInner() {
       };
     }
     
-    // Adicionar carro ao usuário
     updatedDB.users[CURRENT_USER_ID].cars.push(newCar);
-    
     saveDatabase(updatedDB);
   };
 
@@ -1466,17 +1464,13 @@ function MainPageInner() {
       [
         { text: 'Cancelar', style: 'cancel' },
         { 
-          text: 'Excluir', 
-          style: 'destructive',
+          text: 'Excluir',
           onPress: () => {
             const updatedDB = { ...carDatabase };
-            
-            // Remover carro do array do usuário
             if (updatedDB.users[CURRENT_USER_ID]) {
               updatedDB.users[CURRENT_USER_ID].cars = 
                 updatedDB.users[CURRENT_USER_ID].cars.filter(car => car.id !== carId);
             }
-            
             saveDatabase(updatedDB);
             setSelected(null);
             Alert.alert('Sucesso', 'Carro excluído com sucesso!');
@@ -1486,32 +1480,13 @@ function MainPageInner() {
     );
   };
 
-  const handlePublishCar = (car: Car) => {
-    Alert.alert(
-      'Publicar Carro',
-      `Deseja publicar "${car.name}" para todos os usuários?`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { 
-          text: 'Publicar', 
-          onPress: () => {
-            // O carro já está no banco de dados, apenas confirma visualmente
-            Alert.alert('Sucesso', 'Carro já está visível para todos os usuários!');
-          }
-        },
-      ]
-    );
-  };
-
   // Obter carros do usuário atual
   const userCars = carDatabase.users[CURRENT_USER_ID]?.cars || [];
   
-  // Obter carros de outros usuários
   const otherUsersCars = Object.entries(carDatabase.users)
     .filter(([userId]) => userId !== CURRENT_USER_ID)
     .flatMap(([_, userData]) => userData.cars);
 
-  // Combinar todos os carros
   const allCars = [...carDatabase.defaultCars, ...userCars, ...otherUsersCars];
   const featured = allCars.filter(c => c.featured);
   const list = category === 'Todos' 
@@ -1655,7 +1630,6 @@ function MainPageInner() {
           </View>
         )}
 
-        {/* Mostrar carros de outros usuários */}
         {otherUsersCars.length > 0 && (
           <View style={{ marginTop: 20 }}>
             <View style={{ height: 2, backgroundColor: T.ruleHeavy }} />
