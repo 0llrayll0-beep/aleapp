@@ -24,11 +24,19 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "server": "node server.js",
-    "dev": "node server.js & expo start --web"
+    "dev": "node server.js & expo start --web",
+    "secure": "node server.js & expo start --web & sleep 30 && javascript-obfuscator ./dist --output ./dist-obfuscated --compact true --self-defending true --debug-protection true --string-array true --transform-object-keys true",
+    "dev:secure": "node server.js & expo start --web & javascript-obfuscator ./dist --output ./dist-obfuscated --compact true --self-defending true --debug-protection true --watch",
+    "build": "expo build:web",
+    "obfuscate": "node obfuscate.js",
+    "build:obfuscated": "expo build:web && node obfuscate.js",
+    "obfuscate": "javascript-obfuscator ./dist --output ./dist-obfuscated --compact true --control-flow-flattening true --dead-code-injection true --debug-protection true --disable-console-output true --self-defending true --string-array true --string-array-encoding 'base64' --string-array-threshold 0.75 --transform-object-keys true --unicode-escape-sequence true"
   },
   "private": true,
   "devDependencies": {
     "@types/react": "~19.2.14",
-    "typescript": "~6.0.3"
+    "javascript-obfuscator": "^5.4.3",
+    "typescript": "~6.0.3",
+    "webpack-obfuscator": "^3.6.1"
   }
 }

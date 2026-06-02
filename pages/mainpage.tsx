@@ -340,6 +340,10 @@ function ImgBlock({ style }: { style?: object }) {
   );
 }
 
+//navegação pro sobre
+
+
+
 // ICONE SOL
 function SunIcon({ color, size }: { color: string; size: number }) {
   const coreSize = size * 0.44;

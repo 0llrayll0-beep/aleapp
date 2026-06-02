@@ -47,7 +47,7 @@ interface Database {
   usuarios: User[];
 }
 
-// NOVA FUNÇÃO: Carregar banco combinado (JSON + AsyncStorage) (não tenho certeza se funciona pouco tempo para testar)
+// Carregar banco combinado (API + JSON local)
 async function carregarBancoCompleto(): Promise<Database> {
   try {
     // Tentar carregar da API primeiro
@@ -59,10 +59,22 @@ async function carregarBancoCompleto(): Promise<Database> {
       return db;
     }
   } catch (error) {
-    console.log('Servidor não disponível, usando arquivo local');
+    console.log(' Servidor não disponível, usando arquivo local');
   }
   
-  // Fallback: usar arquivo local
+  // Fallback: tentar AsyncStorage
+  try {
+    const asyncDB = await AsyncStorage.getItem('banco_usuarios');
+    if (asyncDB) {
+      const db = JSON.parse(asyncDB);
+      console.log(' Carregado do AsyncStorage:', db.usuarios.length, 'usuários');
+      return db;
+    }
+  } catch (e) {
+    console.log('AsyncStorage não disponível');
+  }
+  
+  // Fallback final: arquivo local
   console.log(' Carregando do banco.json local');
   return { usuarios: bancoJson.usuarios || [] };
 }
@@ -106,7 +118,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   const slideBtn = React.useRef(new Animated.Value(16)).current;
   const shakeAnim = React.useRef(new Animated.Value(0)).current;
 
-  // Carrega banco ao montar - AGORA COMBINANDO AMBAS AS FONTES
+  // Carrega banco ao montar
   useEffect(() => {
     (async () => {
       const db = await carregarBancoCompleto();
@@ -120,7 +132,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
     const unsubscribe = navigation.addListener('focus', async () => {
       const db = await carregarBancoCompleto();
       setBanco(db);
-      console.log('Banco atualizado:', db.usuarios.length, 'usuários');
+      console.log(' Banco atualizado:', db.usuarios.length, 'usuários');
     });
     return unsubscribe;
   }, [navigation]);
@@ -218,9 +230,17 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
       >
         <View style={styles.overlay} />
 
+        {/* Badge */}
         <View style={[styles.badge, { top: badgeTop, left: padH }]}>
           <Text style={[styles.badgeLabel, { fontSize: labelSize }]}>GARAGEM</Text>
           <Text style={[styles.badgeTitle, { fontSize: clamp(s(20), 14, 26) }]}>Coleção</Text>
+        </View>
+
+        {/* Botão SOBRE no canto superior direito */}
+        <View style={[styles.sobreBtn, { top: badgeTop + 2, right: padH }]}>
+          <Pressable onPress={() => navigation.navigate('Sobre')}>
+            <Text style={[styles.sobreBtnText, { fontSize: labelSize }]}>SOBRE</Text>
+          </Pressable>
         </View>
 
         <KeyboardAvoidingView
@@ -232,6 +252,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}
           >
+            {/* Tagline */}
             <View style={[styles.taglineBlock, { paddingHorizontal: padH, marginBottom: clamp(s(20), 12, 28) }]}>
               <Text style={[styles.taglineText, { fontSize: taglineSz }]}>
                 Cada carro{'\n'}conta uma história.
@@ -241,8 +262,10 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
               </Text>
             </View>
 
+            {/* Painel */}
             <View style={[styles.panel, { paddingHorizontal: padH, paddingTop: panelPadT, paddingBottom: panelPadB }]}>
 
+              {/* Cabeçalho */}
               <Animated.View style={[{ opacity: fadeTitle, transform: [{ translateY: slideTitle }] }, { marginBottom: sectionGap }]}>
                 <Text style={[styles.panelLabel, { fontSize: labelSize }]}>ACESSO</Text>
                 <Text style={[styles.panelHeading, { fontSize: headingSize, lineHeight: headingSize * 1.2 }]}>
@@ -251,6 +274,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
                 </Text>
               </Animated.View>
 
+              {/* Campos */}
               <Animated.View style={{ opacity: fadeForm, transform: [{ translateY: slideForm }, { translateX: shakeAnim }] }}>
 
                 <View style={{ marginBottom: fieldGap }}>
@@ -307,6 +331,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
                 </Text>
               </Animated.View>
 
+              {/* Botões */}
               <Animated.View style={{ opacity: fadeBtn, transform: [{ translateY: slideBtn }] }}>
 
                 <Pressable
@@ -348,12 +373,19 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
                   </Text>
                 </Pressable>
 
+                {/* Rodapé */}
                 <View style={[styles.footer, { marginTop: clamp(s(24), 16, 32), paddingTop: clamp(s(20), 14, 26) }]}>
                   <Text style={[styles.footerText, { fontSize: labelSize }]}>SEM CONTA?</Text>
                   
-                  <Pressable onPress={() => navigation.navigate('Cadastro')}>
-                    <Text style={[styles.footerLink, { fontSize: labelSize }]}>CRIAR ACESSO →</Text>
-                  </Pressable>
+                  <View style={{ flexDirection: 'row', gap: 16 }}>
+                    <Pressable onPress={() => navigation.navigate('Sobre')}>
+                      <Text style={[styles.footerLink, { fontSize: labelSize }]}>SOBRE</Text>
+                    </Pressable>
+                    
+                    <Pressable onPress={() => navigation.navigate('Cadastro')}>
+                      <Text style={[styles.footerLink, { fontSize: labelSize }]}>CRIAR ACESSO →</Text>
+                    </Pressable>
+                  </View>
                 </View>
 
               </Animated.View>
@@ -366,7 +398,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   );
 }
 
-// Estilos (mantenha os mesmos)
+// Estilos
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: T.bg },
   bgImage: { flex: 1 },
@@ -378,6 +410,11 @@ const styles = StyleSheet.create({
   badge: { position: 'absolute', zIndex: 10 },
   badgeLabel: { letterSpacing: 4, color: T.inkLight, fontWeight: '600', marginBottom: 2 },
   badgeTitle: { fontWeight: '300', color: T.ink, letterSpacing: 1 },
+  
+  // Botão SOBRE
+  sobreBtn: { position: 'absolute', zIndex: 10 },
+  sobreBtnText: { letterSpacing: 3, color: T.inkLight, fontWeight: '500' },
+  
   kavWrapper: { flex: 1, justifyContent: 'flex-end' },
   scrollContent: { flexGrow: 1, justifyContent: 'flex-end' },
   taglineBlock: { paddingTop: 8 },
