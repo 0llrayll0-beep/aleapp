@@ -184,9 +184,9 @@ const salvarNoBancoJSON = async (usuario: Usuario): Promise<boolean> => {
       return false;
     }
     
-    setMensagemSalvamento('✅ Cadastro realizado!');
-    console.log('✅ Usuário salvo no banco.json:', usuario.email);
-    console.log('📦 Total de usuários:', resultado.total);
+    setMensagemSalvamento('Cadastro realizado!');
+    console.log(' Usuário salvo no banco.json:', usuario.email);
+    console.log(' Total de usuários:', resultado.total);
     
     await new Promise(resolve => setTimeout(resolve, 500));
     setMensagemSalvamento('');
