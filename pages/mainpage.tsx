@@ -1344,11 +1344,8 @@ function AddButton({ onPress }: { onPress: () => void }) {
         bottom: 30,
         right: 30,
         zIndex: 200,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 6,
-        elevation: 8,
+        // Remova qualquer fundo ou sombra daqui
+        backgroundColor: 'transparent',
       }}
     >
       <Animated.View style={{
@@ -1361,6 +1358,12 @@ function AddButton({ onPress }: { onPress: () => void }) {
         borderWidth: 3,
         borderColor: 'rgba(255,255,255,0.3)',
         transform: [{ scale: scaleAnim }, { rotate }],
+        // Aplique a sombra diretamente no círculo
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+        elevation: 8,
       }}>
         <Text style={{
           color: '#FFFFFF',
@@ -1374,7 +1377,6 @@ function AddButton({ onPress }: { onPress: () => void }) {
     </TouchableOpacity>
   );
 }
-
 // TELA PRINCIPAL
 function MainPageInner() {
   const { T, mode } = useTheme();
