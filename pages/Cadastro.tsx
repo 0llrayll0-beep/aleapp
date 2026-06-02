@@ -156,7 +156,6 @@ export default function CadastroScreen({ navigation }: { navigation: any }) {
     return Object.keys(e).length === 0;
   };
 
-  // FUNÇÃO DE SALVAR COM DELAY
 // Função que chama a API para salvar no banco.json
 const salvarNoBancoJSON = async (usuario: Usuario): Promise<boolean> => {
   try {
