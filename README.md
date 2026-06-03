@@ -1,6 +1,6 @@
 # AleApp
 
-Aplicação em React para a escola fortec.
+Aplicação em React para a escola Fortec.
 
 ## Começando
 
@@ -8,6 +8,7 @@ Aplicação em React para a escola fortec.
 
 - Node.js (versão 14 ou superior)
 - npm ou yarn
+- Expo CLI (ou Expo instalado via npx)
 
 ### Instalação
 
@@ -21,5 +22,5 @@ cd aleapp
 # Instale as dependências
 npm install
 
-# Rode o projeto
-npm run dev
+# Instale as dependências para execução Web
+npx expo install react-dom react-native-web @expo/metro-runtime
