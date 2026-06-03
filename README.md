@@ -11,7 +11,7 @@
 
 ---
 
-Sistema desenvolvido para auxiliar a gestão, comunicação e acesso às informações acadêmicas da Fortec.
+projeto para a aula de desenvolvimento mobile
 
 </div>
 
@@ -19,7 +19,7 @@ Sistema desenvolvido para auxiliar a gestão, comunicação e acesso às informa
 
 ## Sobre o Projeto
 
-AleApp é uma aplicação construída com React Native e Expo, projetada para fornecer uma experiência moderna, rápida e acessível em dispositivos móveis e navegadores.
+projeto de escola protótipo
 
 ---
 
@@ -27,7 +27,6 @@ AleApp é uma aplicação construída com React Native e Expo, projetada para fo
 
 * Autenticação de usuários
 * Navegação entre telas
-* Integração com APIs REST
 * Compatibilidade com Android e Web
 * Estrutura modular para expansão futura
 * Interface responsiva
@@ -232,7 +231,7 @@ Após isso, abra um Pull Request.
 
 ## Licença
 
-Este projeto foi desenvolvido para fins educacionais e institucionais da Fortec.
+Este projeto foi desenvolvido com os fins educacionais aprendido na aula.
 
 ---
 
