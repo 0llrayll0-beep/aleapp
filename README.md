@@ -111,25 +111,35 @@ npx expo start
 
 ---
 
-## Estrutura do Projeto
-
-```text
+### Estrutura do Projeto
 aleapp/
 │
-├── assets/
+├── app/
+│   ├── pages/
+│   │   ├── cars/
+│   │   │   ├── id1.png
+│   │   │   ├── id2.png
+│   │   │   ├── ...
+│   │   │   └── placeholder.png
+│   │   │
+│   │   ├── banco.json
+│   │   ├── Cadastro.tsx
+│   │   ├── carrosdb.json
+│   │   ├── direct.tsx
+│   │   ├── login.tsx
+│   │   ├── mainpage.tsx
+│   │   └── Sobre.tsx
+│   │
+│   └── index.tsx
 │
-├── src/
-│   ├── components/
-│   ├── screens/
-│   ├── navigation/
-│   ├── services/
-│   ├── hooks/
-│   └── utils/
-│
-├── App.tsx
+├── app.json
 ├── package.json
-└── README.md
-```
+├── tsconfig.json
+├── server.js
+├── README.md
+├── LICENSE
+├── AGENTS.md
+└── CLAUDE.md
 
 ---
 
