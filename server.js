@@ -60,7 +60,7 @@ app.post('/api/usuarios', (req, res) => {
       });
       
     } catch (erro) {
-      console.error('❌ Erro ao salvar:', erro);
+      console.error(' Erro ao salvar:', erro);
       res.status(500).json({ 
         sucesso: false, 
         erro: 'Erro ao salvar no banco de dados.' 
