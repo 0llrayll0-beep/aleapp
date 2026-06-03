@@ -124,22 +124,13 @@ aleapp/
 │   │   │
 │   │   ├── banco.json
 │   │   ├── Cadastro.tsx
-│   │   ├── carrosdb.json
 │   │   ├── direct.tsx
 │   │   ├── login.tsx
 │   │   ├── mainpage.tsx
 │   │   └── Sobre.tsx
 │   │
 │   └── index.tsx
-│
-├── app.json
-├── package.json
-├── tsconfig.json
 ├── server.js
-├── README.md
-├── LICENSE
-├── AGENTS.md
-└── CLAUDE.md
 
 ---
 
