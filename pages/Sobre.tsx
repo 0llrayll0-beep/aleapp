@@ -33,13 +33,13 @@ const T = {
 
 // Dados do app
 const APP_INFO = {
-  nome: 'Garagem Coleção',
+  nome: 'app maroto',
   versao: '1.7.1',
   descricao: 'Um aplicativo para colecionadores e entusiastas de automóveis. Organize, descubra e compartilhe sua paixão por carros com uma comunidade de apaixonados por velocidade, design e engenharia automotiva.',
   desenvolvedor: 'equipe adoramos o alê',
   ano: '2026',
-  email: 'contato@garagemcolecao.com',
-  website: 'https://garagemcolecao.com',
+  email: 'contato@adoramos_o_ale.com',
+  website: 'https://adoramos_o_ale.com',
   tecnologias: [
     'React Native',
     'TypeScript',
