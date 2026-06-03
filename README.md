@@ -231,7 +231,7 @@ Após isso, abra um Pull Request.
 ---
 
 ## Licença
-
+licenciado com MIT licença
 Este projeto foi desenvolvido com os fins educacionais aprendido na aula.
 
 ---
