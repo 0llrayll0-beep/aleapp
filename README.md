@@ -21,6 +21,6 @@ cd aleapp
 
 # Instale as dependências
 npm install
-
+npm install expo
 # Instale as dependências para execução Web
 npx expo install react-dom react-native-web @expo/metro-runtime
